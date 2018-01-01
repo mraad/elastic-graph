@@ -43,48 +43,6 @@ class Graph(val nodes: Array[Node], val edges: Array[Edge]) extends Serializable
   }
 
   /**
-    * Convert undirected edge to directed links.
-    *
-    * The links is an array of array[Int]
-    *
-    * So   0 <---> 2 <---> 1   becomes
-    *
-    * 0 -> [2]
-    * 1 -> [2]
-    * 2 -> [0,1]
-    *
-    * @return the links of graph.
-    * @deprecated
-    */
-  def links(): Array[Array[Int]] = {
-
-    val links = nodes.map(_ => Array.empty[Int])
-
-    // Convert node-id to links array index
-    val indices = nodes.map(_.id).zipWithIndex.map {
-      case (n, i) => n -> i
-    }.toMap
-
-    stars.foreach {
-      case (star, nodes) => {
-        val s = indices(star.id)
-        nodes.foreach(node => {
-          links(s) = links(s) :+ indices(node.id)
-        })
-      }
-    }
-
-    leafs.foreach {
-      case (leaf, nodes) => {
-        val s = indices(leaf.id)
-        links(s) = links(s) :+ indices(nodes.head.id)
-      }
-    }
-
-    links
-  }
-
-  /**
     * Cut an edge by inserting a node in the middle of the existing nodes.
     *
     * 0 <----> 1  becomes 0 <----> 2 <----> 1
@@ -128,54 +86,9 @@ class Graph(val nodes: Array[Node], val edges: Array[Edge]) extends Serializable
   }
 
   /**
-    * Create Graph instances by cutting each edge and adding a node to each star node.
-    * However, a node is only added to star nodes with fewer that maxStarNodes neighbors.
-    *
-    * @param param    the learning parameters.
-    * @param polarLen the length of a new node.
-    * @return Array of Graph instances.
-    * @deprecated
-    */
-  /*
-  def subGraphs(param: Param, polarLen: Double): Array[Graph] = {
-    val s1 = edges.map(cutEdge(_))
-    if (param.cutEdgesOnly) {
-      s1
-    } else {
-      val s2 = stars
-        .withFilter {
-          // Add a new node to stars with less than maxStarNodes nodes.
-          case (_, nodes) => nodes.length < param.maxStarNodes
-        }
-        .map {
-          case (star, nodes) => {
-            // Sort the nodes by their polar angles and find two consecutive nodes that have max angle between them and insert and edge between them.
-            val polars = convertNodesToPolars(star, nodes)
-            val index = polars
-              .sliding(2)
-              .zipWithIndex
-              .map { case (s, i) => {
-                val d = s.last.deg - s.head.deg
-                (i, if (d < 0.0) 360 + d else d)
-              }
-              }
-              .maxBy(_._2)
-              ._1
-            val orig = polars(index)
-            val dest = polars(index + 1)
-            val tween = orig.between(dest, polarLen)
-            addEdge(star, star + tween)
-          }
-        }
-      s1 ++ s2
-    }
-  }
-  */
-
-  /**
     * Create Graph instances by cutting edges and adding nodes to star nodes.
     *
-    * @param param the application parameters.
+    * @param param the learning parameters.
     * @param datum the input data.
     * @return array of Graph instances.
     */
@@ -227,8 +140,9 @@ class Graph(val nodes: Array[Node], val edges: Array[Edge]) extends Serializable
     * Check if this graph is valid.
     * An invalid graph will have a star with 2 nodes having an angle between them less than param.minAngle.
     *
-    * TODO check if a edge crosses another edge.
+    * TODO check if a edge crosses another edge
     *
+    * @param param the learning parameters
     * @return true if this graph is value, false otherwise.
     */
   def isValid(param: Param): Boolean = {

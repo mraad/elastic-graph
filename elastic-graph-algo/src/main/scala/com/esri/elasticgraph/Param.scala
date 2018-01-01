@@ -3,7 +3,7 @@ package com.esri.elasticgraph
 import scala.math._
 
 /**
-  * The application parameters.
+  * The learning parameters.
   *
   * @param distSqr      the robust distance squared.
   * @param el           the elasticity factor.

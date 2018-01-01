@@ -8,7 +8,7 @@ import scalaxy.loops._
 /**
   * Optimize the locations of the nodes of a graph for a given data set.
   *
-  * @param param the application parameters.
+  * @param param the learning parameters.
   * @param datum optimize the graph nodes based on this data set.
   * @param graph the graph to optimize.
   */

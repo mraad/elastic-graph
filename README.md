@@ -29,23 +29,23 @@ Here are some of the results by varying the noise in the data.
 
 This project is divided into 2 sub projects:
 
-- elastic-graph-algo: This sub project implements the elastic graph algorithm and exposes it as an API. It generates a library jar file that can be linked into applications.
+- `elastic-graph-algo`: This sub project implements the elastic graph algorithm and exposes it as an API. It generates a library jar file that can be linked into applications.
 
-- elastic-graph-main: This sub project generates an executable jar based on the elastic-graph-algo library jar and enables the interaction with the elastic graph algorithm using command line parameters.
+- `elastic-graph-main`: This sub project generates an executable jar based on the `elastic-graph-algo` library jar and enables the interaction with the elastic graph algorithm using command line parameters.
 
 ### Compile the application
 
 The application is built using [Apache Maven](https://maven.apache.org/)
 
-```
+```bash
 mvn clean package
 ```
 
-This produces the aforementioned jar files in each sub project, the library and the executor.
+This produces the aforementioned jar files (the library and the executor) in each sub project `target` folder.
 
 ### Running the application
 
-```
+```bash
 cd elastic-graph-main
 java\
  -Djava.awt.headless=true\
@@ -65,7 +65,7 @@ The above command produces a JavaScript file (`doc.js`) in the `web` folder.  Th
 
 Start a simple HTTP server using Python in the `web` folder:
 
-```
+```bash
 cd web
 python -m SimpleHTTPServer 8000
 ```
@@ -78,7 +78,7 @@ Make sure to refresh the page after each execution to reload the `doc.js` file w
 
 ### Produce Animated GIF
 
-```
+```bash
 java\
  -Djava.awt.headless=true\
  -jar target/elastic-graph-main-0.1-jar-with-dependencies.jar\
@@ -116,7 +116,7 @@ If the above mentioned web server is running, then navigate to [localhost:8000/e
 ### TODO
 
 - ~~Produce animated GIF of graphs at each training epoch.~~
-- Implement directional distance standard deviation for initial node selection.
+- Implement directional distance for initial node selection based on the "shape" of the neighborhood of the first point.
 - Handle multi dimensional input data.
 - Perform calculations in GPU as a lot can be done in parallel.
 

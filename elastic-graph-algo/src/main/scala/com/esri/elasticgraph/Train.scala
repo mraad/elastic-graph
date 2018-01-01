@@ -6,7 +6,7 @@ import scala.annotation.tailrec
   * The training process.
   *
   * @param datum        the input data.
-  * @param param        the application parameters.
+  * @param param        the learning parameters.
   * @param iterListener the iteration listener.
   */
 case class Train(datum: Array[DataXY], param: Param, iterListener: IterListener = NoopListener()) {

@@ -6,7 +6,6 @@ import java.io.PrintWriter
   * Create a file with graph edges at each epoch in WKT format.
   *
   * @param filename the output filename.
-  * @deprecated
   */
 case class WKTListener(filename: String) extends IterListener {
 
