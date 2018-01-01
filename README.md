@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project is an extreme minimalist implementation in Scala of [Robust Principal Graphs](https://github.com/auranic/Elastic-principal-graphs/wiki/Robust-principal-graphs).
+This project is an extreme minimalist implementation in [Scala](https://www.scala-lang.org/) of [Robust Principal Graphs](https://github.com/auranic/Elastic-principal-graphs/wiki/Robust-principal-graphs).
 
 ![](media/eg.gif)
 
