@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elastic Graph Viewer</title>
+    <style type="text/css">
+        body {
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        canvas {
+            border: 1px solid black;
+        }
+
+        .wrapper {
+            display: grid;
+        }
+
+        .row0 {
+            grid-row: 1;
+            grid-column: 1;
+        }
+
+        .row1 {
+            grid-row: 2;
+            grid-column: 1;
+        }
+
+    </style>
+    <script type="text/javascript" src="doc.js"></script>
+    <script type="text/javascript">
+        var ctx;
+        var index = 0;
+        var surfaceW = 400;
+        var surfaceH = 400;
+
+        function buttonPrev_clickHandler() {
+            if (index > 0) {
+                index -= 1;
+                drawGraph();
+            }
+        }
+
+        function buttonNext_clickHandler() {
+            if (index < doc.links.length - 1) {
+                index += 1;
+                drawGraph();
+            }
+        }
+
+        function drawGraph() {
+
+            ctx.clearRect(0, 0, surfaceW, surfaceH);
+
+            ctx.fillStyle = "rgb(255,0,0)";
+            doc.datum.forEach(function (data) {
+                ctx.fillRect(data.x, data.y, 5, 5);
+            });
+
+            ctx.strokeStyle = "rgb(0,0,255)";
+            ctx.lineWidth = 2;
+            doc.links[index].forEach(function (link) {
+                ctx.beginPath();
+                ctx.moveTo(link.mx, link.my);
+                ctx.lineTo(link.lx, link.ly);
+                ctx.stroke();
+            });
+        }
+
+        function normX(x) {
+            return surfaceW * (x - doc.xmin) / doc.xdel;
+        }
+
+        function normY(y) {
+            return surfaceH * (1.0 - (y - doc.ymin) / doc.ydel);
+        }
+
+        function normalize() {
+            doc.datum.forEach(function (data) {
+                data.x = normX(data.x) - 2;
+                data.y = normY(data.y) - 2;
+            });
+            doc.links.forEach(function (epoch) {
+                epoch.forEach(function (link) {
+                    link.mx = normX(link.mx);
+                    link.my = normY(link.my);
+                    link.lx = normX(link.lx);
+                    link.ly = normY(link.ly);
+                })
+            })
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("buttonPrev").addEventListener("click", buttonPrev_clickHandler);
+            document.getElementById("buttonNext").addEventListener("click", buttonNext_clickHandler);
+            var surface = document.getElementById("surface");
+            surfaceW = surface.width;
+            surfaceH = surface.height;
+            ctx = surface.getContext("2d");
+            normalize();
+            drawGraph();
+        });
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="row0">
+        <canvas id="surface" width="400" height="400"></canvas>
+    </div>
+    <div class="row1">
+        <button id="buttonPrev" type="button">Prev</button>
+        <button id="buttonNext" type="button">Next</button>
+    </div>
+</div>
+</body>
+</html>
