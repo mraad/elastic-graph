@@ -19,13 +19,13 @@ import scalaxy.loops._
 case class DirDist(mx: Double, my: Double, sx: Double, sy: Double, deg: Double, n: Int) {
 
   /**
-    * generate ellipse outline.
+    * Generate ellipse outline.
     *
     * @param nPoint number of points on the outline, default is 180.
-    * @return iterable of (x,y)
+    * @return iterable of Euclid implementations
     */
-  def ellipseOutline(nPoint: Int = 180): Iterable[(Double, Double)] = {
-    val arr = new ArrayBuffer[(Double, Double)](nPoint)
+  def ellipseOutline(nPoint: Int = 180): Iterable[Euclid] = {
+    val arr = new ArrayBuffer[Euclid](nPoint)
     var t = 0.0
     val dt = 1.0 / nPoint
 
@@ -40,7 +40,7 @@ case class DirDist(mx: Double, my: Double, sx: Double, sy: Double, deg: Double, 
       val y = min * math.sin(r)
       val rx = x * cosA - y * sinA
       val ry = x * sinA + y * cosA
-      arr.append((mx + rx, my + ry))
+      arr.append(DataXY(mx + rx, my + ry))
       t += dt
     }
     arr
