@@ -54,7 +54,7 @@ java\
  --mu 0.00015\
  --robustDist 0.2\
  --maxNodes 30\
- --inputPath data/tree23.data\
+ --inputPath data/tree23_noise.data\
  --outputFormat js\
  --outputPath web/doc.js
 ```
@@ -109,14 +109,19 @@ If the above mentioned web server is running, then navigate to [localhost:8000/e
 | --robustDist | Robust distance | 0.2 units |
 | --minAngle | A graph is valid if is contains edges that are more than `minAngle` apart | 20 degrees |
 | --cutEdgesOnly | Apply only cut edge grammar | false |
-| --datumOffset | Data offset after selecting the first random point | 10 |
 | --outputPath | Output path | web/doc.js |
 | --outputFormat | Output format, options: `wkt`,`gif`,`js`| js|
+
+### Updates
+
+*2018-01-05*: Added a class to calculate the [directional distribution](http://pro.arcgis.com/en/pro-app/tool-reference/spatial-statistics/h-how-directional-distribution-standard-deviationa.htm) of the data and added a class to maintain a spatial index of the data.
+In the main application, the input data is loaded into a spatial index in the form of a grid. The grid cell size is half of the robust distance.
+The cell with the most data points is then labeled as the 'center cell'.  A directional distribution is calculated based on the data in the center cell and in all it surrounding cells.  The "major nodes" of the directional distribution ellipse are then used as the initial nodes in the elastic graph construction.
 
 ### TODO
 
 - ~~Produce animated GIF of graphs at each training epoch.~~
-- Implement directional distance for initial node selection based on the "shape" of the neighborhood of the first point.
+- ~~Implement directional distance for initial node selection based on the "shape" of the neighborhood of the first point.~~
 - Handle multi dimensional input data.
 - Perform calculations in GPU as a lot can be done in parallel.
 
@@ -130,3 +135,4 @@ If the above mentioned web server is running, then navigate to [localhost:8000/e
 - https://gridbyexample.com/
 - http://elliot.kroo.net/software/java/GifSequenceWriter/GifSequenceWriter.java
 - [PCA In Scala](https://gist.github.com/tyrcho/5884241)
+- http://pro.arcgis.com/en/pro-app/tool-reference/spatial-statistics/h-how-directional-distribution-standard-deviationa.htm

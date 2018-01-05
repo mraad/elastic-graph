@@ -19,6 +19,11 @@ import scalaxy.loops._
 case class DirDist(mx: Double, my: Double, sx: Double, sy: Double, deg: Double, n: Int) {
 
   /**
+    * @return the area of the directional distribution ellipse at one standard deviation.
+    */
+  def area(): Double = Pi * sx * sy
+
+  /**
     * Generate ellipse outline.
     *
     * @param nPoint number of points on the outline, default is 180.

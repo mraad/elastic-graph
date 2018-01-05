@@ -1,10 +1,9 @@
 package com.esri.elasticgraph
 
 import scala.io.Source
-import scala.util.Random
 
 /**
-  * The main application for this project
+  * The main application for this project.
   */
 object MainApp extends App {
 
@@ -22,7 +21,6 @@ object MainApp extends App {
   var maxNodes = 25
   var maxStarNodes = 4
   var cutEdgesOnly = false
-  var datumOffset = 10
 
   // Minimalist and simple command line argument parser
   args.sliding(2, 2).foreach {
@@ -38,7 +36,6 @@ object MainApp extends App {
     case Array("--robustDist", arg) => robustDist = arg.toDouble
     case Array("--minAngle", arg) => minAngle = arg.toDouble
     case Array("--cutEdgesOnly", arg) => cutEdgesOnly = arg.equalsIgnoreCase("true")
-    case Array("--datumOffset", arg) => datumOffset = arg.toInt
     case Array("--outputPath", arg) => outputPath = arg
     case Array("--outputFormat", arg) => outputFormat = arg.toLowerCase
     case rest => {
@@ -63,33 +60,29 @@ object MainApp extends App {
   }
 
   val datum = loadDatum()
-  val i = Random.nextInt(datum.length)
-  val j = (i + datumOffset) min (datum.length - 1)
+  val si = datum.foldLeft(SpatialIndex(robustDist * 0.5))(_ + _)
+  val cell = si.findDensestCell()
+  val near = si.findData(cell)
+  DirDist(near) match {
+    case Some(dist) => {
+      val nodes = dist.majorNodes
+      val node1 = nodes.head
+      val node2 = nodes.last
 
-  // Find the first node randomly
-  val data1 = datum(i)
-  /*
-  // Find the second node that is furthest away
-  val data2 = datum.map(data => {
-    ArgMin(data, data distSqr data1)
-  }).max.arg
-  */
-  val data2 = datum(j)
+      val param = Param(robustDist * robustDist, el, mu, maxNodes, maxStarNodes, minAngle, cutEdgesOnly)
 
-  val node1 = data1.toNode
-  val node2 = data2.toNode
-
-  val param = Param(robustDist * robustDist, el, mu, maxNodes, maxStarNodes, minAngle, cutEdgesOnly)
-
-  val listener = outputFormat match {
-    case "wkt" => WKTListener(outputPath)
-    case "gif" => GIFListener(outputPath, datum)
-    case _ => JSListener(outputPath, datum)
-  }
-  try {
-    Train(datum, param, listener).train(node1, node2)
-  } finally {
-    listener.close()
+      val listener = outputFormat match {
+        case "wkt" => WKTListener(outputPath)
+        case "gif" => GIFListener(outputPath, datum)
+        case _ => JSListener(outputPath, datum)
+      }
+      try {
+        Train(datum, param, listener).train(node1, node2)
+      } finally {
+        listener.close()
+      }
+    }
+    case _ => println("Too few data points (min of 3 is required), or all data points are in the same location.")
   }
 
 }
