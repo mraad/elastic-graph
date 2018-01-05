@@ -1,5 +1,7 @@
 package com.esri.elasticgraph
 
+import scala.collection.mutable.ArrayBuffer
+
 /**
   * Online mean calculation.
   * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
@@ -39,13 +41,12 @@ case class OnlineMu(var n: Int = 0, var mx: Double = 0.0, var my: Double = 0.0) 
     this
   }
 
-  def deviations(datum: Iterable[Euclid]): (Array[(Double, Double)], Double, Double, Double) = {
-    // TODO - Modify to use ArrayBuffer !
-    datum.foldLeft((Array.empty[(Double, Double)], 0.0, 0.0, 0.0)) {
+  def deviations(datum: Iterable[Euclid]): (Iterable[(Double, Double)], Double, Double, Double) = {
+    datum.foldLeft((ArrayBuffer[(Double, Double)](), 0.0, 0.0, 0.0)) {
       case ((arr, x2, y2, xy), data) => {
         val dx = data.x - mx
         val dy = data.y - my
-        (arr :+ (dx, dy), x2 + dx * dx, y2 + dy * dy, xy + dx * dy)
+        (arr += ((dx, dy)), x2 + dx * dx, y2 + dy * dy, xy + dx * dy)
       }
     }
   }
