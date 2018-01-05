@@ -7,7 +7,7 @@
 
     <groupId>com.esri</groupId>
     <artifactId>elastic-graph</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>pom</packaging>
     <name>elastic-graph</name>
     <description>Elastic Graph</description>

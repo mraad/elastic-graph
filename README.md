@@ -49,7 +49,7 @@ This produces the aforementioned jar files (the library and the executor) in eac
 cd elastic-graph-main
 java\
  -Djava.awt.headless=true\
- -jar target/elastic-graph-main-0.1-jar-with-dependencies.jar\
+ -jar target/elastic-graph-main-0.2-jar-with-dependencies.jar\
  --el 0.00015\
  --mu 0.00015\
  --robustDist 0.2\
@@ -81,7 +81,7 @@ Make sure to refresh the page after each execution to reload the `doc.js` file w
 ```bash
 java\
  -Djava.awt.headless=true\
- -jar target/elastic-graph-main-0.1-jar-with-dependencies.jar\
+ -jar target/elastic-graph-main-0.2-jar-with-dependencies.jar\
  --el 0.00015\
  --mu 0.00015\
  --robustDist 0.2\
@@ -129,3 +129,4 @@ If the above mentioned web server is running, then navigate to [localhost:8000/e
 - http://www.baeldung.com/executable-jar-with-maven
 - https://gridbyexample.com/
 - http://elliot.kroo.net/software/java/GifSequenceWriter/GifSequenceWriter.java
+- [PCA In Scala](https://gist.github.com/tyrcho/5884241)

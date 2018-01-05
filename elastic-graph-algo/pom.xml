@@ -5,12 +5,12 @@
     <parent>
         <groupId>com.esri</groupId>
         <artifactId>elastic-graph</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>elastic-graph-algo</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
     <description>Elastic Graph Algo</description>
 
