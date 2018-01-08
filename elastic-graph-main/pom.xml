@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>elastic-graph-main</artifactId>
-    <version>0.2</version>
     <packaging>jar</packaging>
     <description>Elastic Graph Main</description>
 

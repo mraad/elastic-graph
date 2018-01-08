@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>elastic-graph-algo</artifactId>
-    <version>0.2</version>
     <packaging>jar</packaging>
     <description>Elastic Graph Algo</description>
 
