@@ -62,6 +62,7 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
     var changed = 0
     var outside = 0
     reset()
+    // TODO - Parallelize ?
     for (dataIndex <- 0 until datum.length optimized) {
       val data = datum(dataIndex)
       val argMin = findBestNode(nodes, data)

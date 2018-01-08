@@ -49,7 +49,7 @@ This produces the aforementioned jar files (the library and the executor) in eac
 cd elastic-graph-main
 java\
  -Djava.awt.headless=true\
- -jar target/elastic-graph-main-0.2-jar-with-dependencies.jar\
+ -jar target/elastic-graph-main-0.3-jar-with-dependencies.jar\
  --el 0.00015\
  --mu 0.00015\
  --robustDist 0.2\
@@ -81,7 +81,7 @@ Make sure to refresh the page after each execution to reload the `doc.js` file w
 ```bash
 java\
  -Djava.awt.headless=true\
- -jar target/elastic-graph-main-0.2-jar-with-dependencies.jar\
+ -jar target/elastic-graph-main-0.3-jar-with-dependencies.jar\
  --el 0.00015\
  --mu 0.00015\
  --robustDist 0.2\
@@ -111,8 +111,11 @@ If the above mentioned web server is running, then navigate to [localhost:8000/e
 | --cutEdgesOnly | Apply only cut edge grammar | false |
 | --outputPath | Output path | web/doc.js |
 | --outputFormat | Output format, options: `wkt`,`gif`,`js`| js|
+| --shuffleTake | Shuffle the input data and take the first n values | -1 (no shuffle and take) |
 
 ### Updates
+
+*2018-01-08*: Added `--shuffleTake` as a command line argument.
 
 *2018-01-05*: Added a class to calculate the [directional distribution](http://pro.arcgis.com/en/pro-app/tool-reference/spatial-statistics/h-how-directional-distribution-standard-deviationa.htm) of the data and added a class to maintain a spatial index of the data.
 In the main application, the input data is loaded into a spatial index in the form of a grid. The grid cell size is half of the robust distance.

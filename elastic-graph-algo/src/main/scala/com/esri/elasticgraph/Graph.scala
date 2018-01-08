@@ -109,15 +109,16 @@ class Graph(val nodes: Array[Node], val edges: Array[Edge]) extends Serializable
       // TODO - Create sub star collection with nodes less that param.maxNodes.
       // Associate each data with a star.  The distance to the star has to be less that the robust distance.
       val group = datum
+        .par // TODO - GPU ?
         .map(data => {
-          val bestNode = stars
-            .map {
-              case (star, _) => ArgMin(star, star distSqr data)
-            }
-            .min
-          val id = if (bestNode.min < param.distSqr) bestNode.arg.id else Node.zero.id
-          ArgMin(data, 0.0, id)
-        })
+        val bestNode = stars
+          .map {
+            case (star, _) => ArgMin(star, star distSqr data)
+          }
+          .min
+        val id = if (bestNode.min < param.distSqr) bestNode.arg.id else Node.zero.id
+        ArgMin(data, 0.0, id)
+      })
         .groupBy(_.index)
       // Create new edges based on the data that is associated with each star.
       val s3 = stars

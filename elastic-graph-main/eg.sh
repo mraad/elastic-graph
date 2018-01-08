@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 java\
  -Djava.awt.headless=true\
- -jar target/elastic-graph-main-0.1-jar-with-dependencies.jar\
+ -jar target/elastic-graph-main-0.3-jar-with-dependencies.jar\
  --el 0.00015\
  --mu 0.00015\
  --robustDist 0.2\
