@@ -28,14 +28,17 @@ case class Train(datum: Array[DataXY], param: Param, iterListener: IterListener 
       graphOld
     }
     else {
-      val graphNew = graphOld
+      val graphs = graphOld
         .subGraphs(param, datum)
         .par
         .map(Optimize(param, datum, _).optimize())
         .filter(_.arg.isValid(param))
-        .min
-        .arg
-      trainRec(graphNew)
+      if (graphs.isEmpty) {
+        graphOld
+      } else {
+        val graphNew = graphs.min.arg
+        trainRec(graphNew)
+      }
     }
   }
 
