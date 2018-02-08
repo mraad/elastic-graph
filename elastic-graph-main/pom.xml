@@ -17,7 +17,7 @@
         <dependency>
             <groupId>com.esri</groupId>
             <artifactId>elastic-graph-algo</artifactId>
-            <version>0.2</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.json4s</groupId>
