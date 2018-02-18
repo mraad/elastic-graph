@@ -47,6 +47,7 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
     * @return ArgMin instance with best node, distance and node index.
     */
   private def findBestNode(nodes: Array[Node], data: DataXY): ArgMin[Node] = {
+    // TODO - Parallelize ?
     nodes.zipWithIndex.map {
       case (node, nodeIndex) => ArgMin(node, node distSqr data, nodeIndex)
     }.min
@@ -62,7 +63,6 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
     var changed = 0
     var outside = 0
     reset()
-    // TODO - Parallelize ?
     for (dataIndex <- 0 until datum.length optimized) {
       val data = datum(dataIndex)
       val argMin = findBestNode(nodes, data)

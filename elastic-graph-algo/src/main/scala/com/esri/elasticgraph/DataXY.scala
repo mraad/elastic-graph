@@ -17,4 +17,14 @@ case class DataXY(x: Double, y: Double) extends Euclid {
     Node(x, y)
   }
 
+  /**
+    * Convert to an ArgMin instance.
+    *
+    * @param euclid a Euclid instance to calculate the distance to.
+    * @return an ArgMin instance.
+    */
+  def toArgMin(euclid: Euclid): ArgMin[DataXY] = {
+    ArgMin(this, this distSqr euclid)
+  }
+
 }
