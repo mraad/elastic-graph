@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.esri</groupId>
         <artifactId>elastic-graph</artifactId>
-        <version>0.5</version>
+        <version>0.6</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -17,7 +17,8 @@
         <dependency>
             <groupId>com.esri</groupId>
             <artifactId>elastic-graph-algo</artifactId>
-            <version>0.4</version>
+            <version>${project.version}</version>
+            <classifier>${scala.compact}</classifier>
         </dependency>
         <dependency>
             <groupId>org.json4s</groupId>

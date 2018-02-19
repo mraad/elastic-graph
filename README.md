@@ -49,7 +49,7 @@ This produces the aforementioned jar files (the library and the executor) in eac
 cd elastic-graph-main
 java\
  -Djava.awt.headless=true\
- -jar target/elastic-graph-main-0.3-jar-with-dependencies.jar\
+ -jar target/elastic-graph-main-0.6-jar-with-dependencies.jar\
  --el 0.00015\
  --mu 0.00015\
  --robustDist 0.2\
@@ -81,7 +81,7 @@ Make sure to refresh the page after each execution to reload the `doc.js` file w
 ```bash
 java\
  -Djava.awt.headless=true\
- -jar target/elastic-graph-main-0.3-jar-with-dependencies.jar\
+ -jar target/elastic-graph-main-0.6-jar-with-dependencies.jar\
  --el 0.00015\
  --mu 0.00015\
  --robustDist 0.2\
