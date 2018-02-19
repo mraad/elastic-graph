@@ -38,7 +38,11 @@ This project is divided into 2 sub projects:
 The application is built using [Apache Maven](https://maven.apache.org/)
 
 ```bash
-mvn clean package
+mvn clean install
+```
+
+```
+mvn -Pscala-2.10 clean install
 ```
 
 This produces the aforementioned jar files (the library and the executor) in each sub project `target` folder.
