@@ -23,6 +23,8 @@ object MainApp extends App {
   var maxStarNodes = 4
   var cutEdgesOnly = false
   var shuffleTake = -1
+  var dirDistMode = false
+  var spatialSizeArg = Double.NaN
 
   // Minimalist and simple command line argument parser
   args.sliding(2, 2).foreach {
@@ -41,6 +43,8 @@ object MainApp extends App {
     case Array("--outputPath", arg) => outputPath = arg
     case Array("--outputFormat", arg) => outputFormat = arg.toLowerCase
     case Array("--shuffleTake", arg) => shuffleTake = arg.toInt
+    case Array("--dirDistMode", arg) => dirDistMode = arg.equalsIgnoreCase("true")
+    case Array("--spatialSize", arg) => spatialSizeArg = arg.toDouble
     case rest => {
       val text = rest.mkString(" ")
       println(s"${Console.RED}Invalid command line argument ($text), exiting.${Console.RESET}")
@@ -48,7 +52,7 @@ object MainApp extends App {
     }
   }
 
-  def loadDatum(): Array[DataXY] = {
+  private def loadDatum(): Array[DataXY] = {
     val list = Source
       .fromFile(inputPath)
       .getLines
@@ -66,36 +70,63 @@ object MainApp extends App {
       list.toArray
   }
 
+  private def train(node1: Node, node2: Node, dist: Double) = {
+    val param = Param(dist * dist, el, mu, maxNodes, maxStarNodes, minAngle, cutEdgesOnly)
+    val listener = outputFormat match {
+      case "wkt" => WKTListener(outputPath)
+      case "gif" => GIFListener(outputPath, datum)
+      case _ => JSListener(outputPath, datum)
+    }
+    try {
+      Train(datum, param, listener).train(node1, node2)
+    } finally {
+      listener.close()
+    }
+  }
+
   val datum = loadDatum()
   if (!datum.isEmpty) {
-    // println(s"Spatially indexing ${datum.length} data points.")
-    val si = datum.foldLeft(SpatialIndex(robustDist * 0.5))(_ + _)
-    val cell = si.findDensestCell()
-    val near = si.findData(cell)
-    DirDist(near) match {
-      case Some(dist) => {
-        val nodes = dist.majorNodes
-        val node1 = nodes.head
-        val node2 = nodes.last
-
-        val param = Param(robustDist * robustDist, el, mu, maxNodes, maxStarNodes, minAngle, cutEdgesOnly)
-
-        val listener = outputFormat match {
-          case "wkt" => WKTListener(outputPath)
-          case "gif" => GIFListener(outputPath, datum)
-          case _ => JSListener(outputPath, datum)
+    if (dirDistMode) {
+      DirDist(datum) match {
+        case Some(dist) => {
+          val minor = dist.sx min dist.sy
+          val major = dist.sx max dist.sy
+          val si = datum.foldLeft(SpatialIndex(major / 10.0))(_ + _)
+          val nodes = dist.majorNodes
+          val node1 = nodes.head
+          val node2 = nodes.last
+          val n1 = si.findNearest(node1, 10) match {
+            case Some(n) => n.toNode
+            case _ => node1
+          }
+          val n2 = si.findNearest(node2, 10) match {
+            case Some(n) => n.toNode
+            case _ => node2
+          }
+          Console.println(f"${Console.YELLOW}Overriding robust distance with $minor%.3f.${Console.RESET}")
+          train(n1, n2, minor)
         }
-        try {
-          Train(datum, param, listener).train(node1, node2)
-        } finally {
-          listener.close()
-        }
+        case _ => printDirDistError()
       }
-      case _ => println("Too few data points (min of 3 is required), or all data points are in the same location.")
+    } else {
+      val spatialSize = if (spatialSizeArg.isNaN) robustDist * 2.0 else spatialSizeArg
+      val si = datum.foldLeft(SpatialIndex(spatialSize))(_ + _)
+      val cell = si.findDensestCell()
+      val near = si.findData(cell)
+      DirDist(near) match {
+        case Some(dist) => {
+          val nodes = dist.majorNodes
+          train(nodes.head, nodes.last, robustDist)
+        }
+        case _ => printDirDistError()
+      }
     }
   }
   else {
     Console.println(s"${Console.RED}Input is empty, exiting.${Console.RESET}")
   }
 
+  private def printDirDistError() = {
+    println(s"${Console.RED}Too few data points (min of 3 is required), or all data points are in the same location.${Console.RESET}")
+  }
 }
