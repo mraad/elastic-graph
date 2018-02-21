@@ -23,7 +23,7 @@ object MainApp extends App {
   var maxStarNodes = 4
   var cutEdgesOnly = false
   var shuffleTake = -1
-  var dirDistMode = false
+  var dirDistTrue = false
   var spatialSizeArg = Double.NaN
 
   // Minimalist and simple command line argument parser
@@ -43,7 +43,7 @@ object MainApp extends App {
     case Array("--outputPath", arg) => outputPath = arg
     case Array("--outputFormat", arg) => outputFormat = arg.toLowerCase
     case Array("--shuffleTake", arg) => shuffleTake = arg.toInt
-    case Array("--dirDistMode", arg) => dirDistMode = arg.equalsIgnoreCase("true")
+    case Array("--dirDistMode", arg) => dirDistTrue = arg.equalsIgnoreCase("true")
     case Array("--spatialSize", arg) => spatialSizeArg = arg.toDouble
     case rest => {
       val text = rest.mkString(" ")
@@ -84,42 +84,38 @@ object MainApp extends App {
     }
   }
 
+  def train(seq: Seq[DataXY], si: SpatialIndex): Unit = {
+    DirDist(seq) match {
+      case Some(dist) => {
+        val nodes = dist.majorNodes
+        val node1 = nodes.head
+        val node2 = nodes.last
+        val n1 = si.findNearest(node1, 5) match {
+          case Some(n) => n.toNode
+          case _ => node1
+        }
+        val n2 = si.findNearest(node2, 5) match {
+          case Some(n) => n.toNode
+          case _ => node2
+        }
+        train(n1, n2, robustDist)
+      }
+      case _ => printDirDistError()
+    }
+  }
+
   val datum = loadDatum()
   if (!datum.isEmpty) {
-    if (dirDistMode) {
-      DirDist(datum) match {
-        case Some(dist) => {
-          val minor = dist.sx min dist.sy
-          val major = dist.sx max dist.sy
-          val si = datum.foldLeft(SpatialIndex(major / 10.0))(_ + _)
-          val nodes = dist.majorNodes
-          val node1 = nodes.head
-          val node2 = nodes.last
-          val n1 = si.findNearest(node1, 10) match {
-            case Some(n) => n.toNode
-            case _ => node1
-          }
-          val n2 = si.findNearest(node2, 10) match {
-            case Some(n) => n.toNode
-            case _ => node2
-          }
-          Console.println(f"${Console.YELLOW}Overriding robust distance with $minor%.3f.${Console.RESET}")
-          train(n1, n2, minor)
-        }
-        case _ => printDirDistError()
-      }
+    val extent = datum.foldLeft(Extent())(_ + _)
+    println(extent.width, extent.height)
+    val spatialSize = if (spatialSizeArg.isNaN) robustDist else spatialSizeArg
+    val si = datum.foldLeft(SpatialIndex(spatialSize))(_ + _)
+    if (dirDistTrue) {
+      train(datum, si)
     } else {
-      val spatialSize = if (spatialSizeArg.isNaN) robustDist * 2.0 else spatialSizeArg
-      val si = datum.foldLeft(SpatialIndex(spatialSize))(_ + _)
       val cell = si.findDensestCell()
       val near = si.findData(cell)
-      DirDist(near) match {
-        case Some(dist) => {
-          val nodes = dist.majorNodes
-          train(nodes.head, nodes.last, robustDist)
-        }
-        case _ => printDirDistError()
-      }
+      train(near, si)
     }
   }
   else {

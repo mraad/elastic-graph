@@ -1,8 +1,9 @@
 package com.esri.elasticgraph
 
+import scalaxy.loops._
+
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
-import scalaxy.loops._
 
 /**
   * A cell in the spatial index grid.
