@@ -7,7 +7,7 @@
 
     <groupId>com.esri</groupId>
     <artifactId>elastic-graph</artifactId>
-    <version>0.8</version>
+    <version>0.9</version>
     <packaging>pom</packaging>
     <name>elastic-graph</name>
     <description>Elastic Graph</description>
@@ -33,13 +33,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <scala.compact>2.10</scala.compact>
-        <scala.version>${scala.compact}.6</scala.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.esri</groupId>
+            <artifactId>euclid</artifactId>
+            <version>0.2</version>
+            <classifier>${scala.compact}</classifier>
+        </dependency>
         <dependency>
             <groupId>org.scalanlp</groupId>
             <artifactId>breeze-natives_${scala.compact}</artifactId>
@@ -50,6 +52,10 @@
             <artifactId>scalaxy-loops_${scala.compact}</artifactId>
             <version>0.3.4</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-compiler</artifactId>

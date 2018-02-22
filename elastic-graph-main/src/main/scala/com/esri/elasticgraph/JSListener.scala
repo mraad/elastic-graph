@@ -2,6 +2,7 @@ package com.esri.elasticgraph
 
 import java.io.PrintWriter
 
+import com.esri.euclid.{Euclid, Extent}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 

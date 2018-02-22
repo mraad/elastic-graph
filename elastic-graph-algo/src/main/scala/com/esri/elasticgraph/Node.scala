@@ -1,5 +1,7 @@
 package com.esri.elasticgraph
 
+import com.esri.euclid.Euclid
+
 import scala.math._
 
 /**

@@ -3,8 +3,9 @@ package com.esri.elasticgraph
 import java.awt.image.BufferedImage
 import java.awt.{BasicStroke, Color, RenderingHints}
 import java.io.File
-import javax.imageio.stream.FileImageOutputStream
 
+import com.esri.euclid.{Euclid, Extent}
+import javax.imageio.stream.FileImageOutputStream
 import net.kroo.elliot.GifSequenceWriter
 
 import scala.collection.JavaConversions._

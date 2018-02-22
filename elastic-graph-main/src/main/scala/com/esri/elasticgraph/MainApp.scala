@@ -1,5 +1,7 @@
 package com.esri.elasticgraph
 
+import com.esri.euclid.{DirDist, EuclidConstructor, Extent}
+
 import scala.io.Source
 import scala.util.Random
 
@@ -84,17 +86,22 @@ object MainApp extends App {
     }
   }
 
-  private def train(dist: DirDist, si: SpatialIndex, robustDist: Double): Unit = {
-    val nodes = dist.majorNodes
-    val n1 = si.findNearest(nodes.head, 5) match {
-      case Some(n) => n.toNode
-      case _ => nodes.head
+  class DataXYConstructor extends EuclidConstructor[DataXY] {
+    override def construct(x: Double, y: Double): DataXY = DataXY(x, y)
+  }
+
+  private def train(dist: DirDist[DataXY], si: SpatialIndex, robustDist: Double): Unit = {
+    implicit val ctor = new DataXYConstructor()
+    val ends = dist.majorEnds()
+    val n1 = si.findNearest(ends.head, 5) match {
+      case Some(n) => n
+      case _ => ends.head
     }
-    val n2 = si.findNearest(nodes.last, 5) match {
-      case Some(n) => n.toNode
-      case _ => nodes.last
+    val n2 = si.findNearest(ends.last, 5) match {
+      case Some(n) => n
+      case _ => ends.last
     }
-    train(n1, n2, robustDist)
+    train(n1.toNode, n2.toNode, robustDist)
   }
 
   private def train(seq: Seq[DataXY], si: SpatialIndex, robustDist: Double): Unit = {

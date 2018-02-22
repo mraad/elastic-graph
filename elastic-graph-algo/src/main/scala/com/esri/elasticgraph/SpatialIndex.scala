@@ -1,5 +1,6 @@
 package com.esri.elasticgraph
 
+import com.esri.euclid.Euclid
 import scalaxy.loops._
 
 import scala.collection.mutable

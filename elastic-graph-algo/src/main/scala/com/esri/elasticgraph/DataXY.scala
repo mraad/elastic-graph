@@ -1,5 +1,7 @@
 package com.esri.elasticgraph
 
+import com.esri.euclid.Euclid
+
 /**
   * A 2D location of input data.
   *
