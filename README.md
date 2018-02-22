@@ -117,11 +117,11 @@ If the above mentioned web server is running, then navigate to [localhost:8000/e
 | --outputFormat | Output format, options: `wkt`,`gif`,`js`| js|
 | --shuffleTake | Shuffle the input data and take the first n values | -1 (no shuffle and take) |
 | --dirDistMode | Perform a directional distribution to find initial major nodes |
-| --spatialSize | Specify spatial index cell size, if not defined it will be set to 2 x robust distance |
+| --indexSize | Specify spatial index cell size, if not defined it will be set to 2 x robust distance |
 
 ### Updates
 
-*2018-02-20*: Added `--dirDistMode` and `--spatialSize` as command line arguments.
+*2018-02-20*: Added `--dirDistMode` and `--indexSize` as command line arguments.
 
 *2018-01-08*: Added `--shuffleTake` as a command line argument.
 
