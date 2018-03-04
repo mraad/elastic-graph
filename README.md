@@ -111,6 +111,7 @@ If the above mentioned web server is running, then navigate to [localhost:8000/e
 | --maxNodes  | Max nodes of generated graph | 25 |
 | --maxStarNodes | Add edges to stars with less than `maxStarNodes` neighbors | 4 |
 | --robustDist | Robust distance | 0.2 units |
+| --robustRate | Robust distance decremental rate per epoch | 0.0 |
 | --minAngle | A graph is valid if is contains edges that are more than `minAngle` apart | 20 degrees |
 | --cutEdgesOnly | Apply only cut edge grammar | false |
 | --outputPath | Output path | web/doc.js |
@@ -120,6 +121,8 @@ If the above mentioned web server is running, then navigate to [localhost:8000/e
 | --indexSize | Specify spatial index cell size, if not defined it will be set to 2 x robust distance |
 
 ### Updates
+
+*2018-03-04*: Added `--robustRate` as a command line argument.  The robust distance will be decremented at each learning epoch by the current value - current value * robustRate.
 
 *2018-02-20*: Added `--dirDistMode` and `--indexSize` as command line arguments.
 

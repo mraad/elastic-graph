@@ -25,6 +25,7 @@ object MainApp extends App {
   var cutEdgesOnly = false
   var shuffleTake = -1
   var dirDistTrue = false
+  var robustRate = 0.0
   var robustDistArg = Double.NaN
   var indexSizeArg = Double.NaN
 
@@ -46,6 +47,7 @@ object MainApp extends App {
     case Array("--shuffleTake", arg) => shuffleTake = arg.toInt
     case Array("--dirDistMode", arg) => dirDistTrue = arg.equalsIgnoreCase("true")
     case Array("--robustDist", arg) => robustDistArg = arg.toDouble
+    case Array("--robustRate", arg) => robustRate = arg.toDouble max 0.0
     case Array("--indexSize", arg) => indexSizeArg = arg.toDouble
     case rest => {
       val text = rest.mkString(" ")
@@ -73,7 +75,7 @@ object MainApp extends App {
   }
 
   private def train(node1: Node, node2: Node, dist: Double): Unit = {
-    val param = Param(dist * dist, el, mu, maxNodes, maxStarNodes, minAngle, cutEdgesOnly)
+    val param = Param(dist * dist, el, mu, maxNodes, maxStarNodes, minAngle, cutEdgesOnly, robustRate)
     val listener = outputFormat match {
       case "wkt" => WKTListener(outputPath)
       case "gif" => GIFListener(outputPath, datum)

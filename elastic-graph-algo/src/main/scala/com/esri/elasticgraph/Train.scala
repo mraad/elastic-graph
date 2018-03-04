@@ -22,22 +22,22 @@ case class Train(datum: Array[DataXY], param: Param, iterListener: IterListener 
     * @return Graph instance with `param.maxNodes` nodes.
     */
   @tailrec
-  private def trainRec(graphOld: Graph): Graph = {
+  private def trainRec(graphOld: Graph, localParam: Param): Graph = {
     iterListener.onGraph(graphOld)
-    if (graphOld.numNodes == param.maxNodes) {
+    if (graphOld.numNodes == localParam.maxNodes) {
       graphOld
     }
     else {
       val graphs = graphOld
-        .subGraphs(param, datum)
+        .subGraphs(localParam, datum)
         .par
-        .map(Optimize(param, datum, _).optimize())
-        .filter(_.arg.isValid(param))
+        .map(Optimize(localParam, datum, _).optimize())
+        .filter(_.arg.isValid(localParam))
       if (graphs.isEmpty) {
         graphOld
       } else {
         val graphNew = graphs.min.arg
-        trainRec(graphNew)
+        trainRec(graphNew, localParam.decrement())
       }
     }
   }
@@ -50,6 +50,6 @@ case class Train(datum: Array[DataXY], param: Param, iterListener: IterListener 
     * @return Graph instance.
     */
   def train(node1: Node, node2: Node): Graph = {
-    trainRec(Graph(node1, node2))
+    trainRec(Graph(node1, node2), param)
   }
 }
