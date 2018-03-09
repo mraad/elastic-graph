@@ -7,9 +7,6 @@ class NoopListener extends IterListener {
 
   // Do nothing
   override def onGraph(graph: Graph): Unit = {}
-
-  // Do nothing
-  override def close(): Unit = {}
 }
 
 /**

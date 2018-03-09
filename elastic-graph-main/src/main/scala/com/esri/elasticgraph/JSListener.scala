@@ -12,7 +12,7 @@ import org.json4s.jackson.JsonMethods._
   * @param filename the javascript output file name.
   * @param datum    the input data.
   */
-case class JSListener(filename: String, datum: Seq[Euclid]) extends IterListener {
+case class JSListener(filename: String, datum: Seq[Euclid]) extends IterListener with AutoCloseable {
 
   var graphs = Seq.empty[Graph]
 

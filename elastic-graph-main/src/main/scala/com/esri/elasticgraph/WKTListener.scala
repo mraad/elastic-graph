@@ -7,7 +7,7 @@ import java.io.PrintWriter
   *
   * @param filename the output filename.
   */
-case class WKTListener(filename: String) extends IterListener {
+case class WKTListener(filename: String) extends IterListener with AutoCloseable {
 
   private val pw = new PrintWriter(filename)
 

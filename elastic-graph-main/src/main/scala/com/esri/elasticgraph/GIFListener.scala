@@ -16,7 +16,7 @@ import scala.collection.JavaConversions._
   * @param filename the animated GIF output file name.
   * @param datum    the input data.
   */
-case class GIFListener(filename: String, datum: Seq[Euclid]) extends IterListener {
+case class GIFListener(filename: String, datum: Seq[Euclid]) extends IterListener with AutoCloseable {
 
   var graphs = Seq.empty[Graph]
 
