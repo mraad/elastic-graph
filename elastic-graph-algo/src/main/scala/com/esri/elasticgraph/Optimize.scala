@@ -1,18 +1,21 @@
 package com.esri.elasticgraph
 
 import breeze.linalg.{DenseMatrix, DenseVector}
+// import scalaxy.loops._
 
 import scala.annotation.tailrec
-import scalaxy.loops._
 
 /**
-  * Optimize the locations of the nodes of a graph for a given data set.
-  *
-  * @param param the learning parameters.
-  * @param datum optimize the graph nodes based on this data set.
-  * @param graph the graph to optimize.
-  */
-class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Serializable {
+ * Optimize the locations of the nodes of a graph for a given data set.
+ *
+ * @param param the learning parameters.
+ * @param datum optimize the graph nodes based on this data set.
+ * @param graph the graph to optimize.
+ */
+class Optimize(param: Param,
+               datum: Array[DataXY],
+               graph: Graph
+              ) extends Serializable {
 
   private val matOrig = graph.createMatrix(param.el, param.mu)
   private val matComp = DenseMatrix.zeros[Double](graph.numNodes, graph.numNodes)
@@ -29,24 +32,33 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
   private val y = DenseVector.zeros[Double](graph.numNodes)
 
   /**
-    * Reset the number of data/nodes and the node positions.
-    */
-  private def reset() = {
-    for (i <- 0 until n.length optimized) {
+   * Reset the number of data/nodes and the node positions.
+   */
+  private def reset(): Unit = {
+    var i = 0
+    while (i < n.length) {
       n(i) = 0.0
       x(i) = 0.0
       y(i) = 0.0
+      i += 1
     }
+    //    for (i <- 0 until n.length optimized) {
+    //      n(i) = 0.0
+    //      x(i) = 0.0
+    //      y(i) = 0.0
+    //    }
   }
 
   /**
-    * Find the best node for a given data point.
-    *
-    * @param nodes the nodes
-    * @param data  the data.
-    * @return ArgMin instance with best node, distance and node index.
-    */
-  private def findBestNode(nodes: Array[Node], data: DataXY): ArgMin[Node] = {
+   * Find the best node for a given data point.
+   *
+   * @param nodes the nodes
+   * @param data  the data.
+   * @return ArgMin instance with best node, distance and node index.
+   */
+  private def findBestNode(nodes: Array[Node],
+                           data: DataXY
+                          ): ArgMin[Node] = {
     // TODO - Parallelize ?
     nodes.zipWithIndex.map {
       case (node, nodeIndex) => ArgMin(node, node distSqr data, nodeIndex)
@@ -54,16 +66,18 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
   }
 
   /**
-    * Classify data per node based on robust distance.
-    *
-    * @param nodes the new nodes to use to classify data points.
-    * @return Tuple (boolean,boolean) - the first item is an indication if a data class changed, the second item is an indication if all input data is outside the robust radius from a node.
-    */
+   * Classify data per node based on robust distance.
+   *
+   * @param nodes the new nodes to use to classify data points.
+   * @return Tuple (boolean,boolean) - the first item is an indication if a data class changed, the second item is an indication if all input data is outside the robust radius from a node.
+   */
   def classify(nodes: Array[Node]): (Boolean, Boolean) = {
     var changed = 0
     var outside = 0
     reset()
-    for (dataIndex <- 0 until datum.length optimized) {
+    var dataIndex = 0
+    while (dataIndex < datum.length) {
+      //for (dataIndex <- 0 until datum.length optimized) {
       val data = datum(dataIndex)
       val argMin = findBestNode(nodes, data)
       if (argMin.min <= param.distSqr) {
@@ -83,6 +97,7 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
         d(dataIndex) = param.distSqr
         outside += 1
       }
+      dataIndex += 1
     }
     (changed == 0, outside == datum.length)
   }
@@ -90,7 +105,9 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
   val iterMax = 21
 
   @tailrec
-  private def optimizeRec(oldNodes: Array[Node], iterNum: Int = 0): Array[Node] = {
+  private def optimizeRec(oldNodes: Array[Node],
+                          iterNum: Int = 0
+                         ): Array[Node] = {
     // Keep looping until either:
     // 1 - we reached a max iteration count
     // 2 - the data to node classification did not change
@@ -102,8 +119,9 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
       if (noChange || allOutside) {
         oldNodes
       } else {
-        for (i <- 0 until matOrig.rows optimized) {
-          for (j <- 0 until matOrig.cols optimized) {
+        // TODO - OPTIMIZE
+        for (i <- 0 until matOrig.rows) {
+          for (j <- 0 until matOrig.cols) {
             matComp(i, j) = matOrig(i, j)
           }
           matComp(i, i) += n(i) / datum.length
@@ -113,8 +131,11 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
         val newX = matComp \ x
         val newY = matComp \ y
         val newNodes = new Array[Node](oldNodes.length)
-        for (i <- 0 until oldNodes.length optimized) {
+        var i = 0
+        while (i < oldNodes.length) {
+          // for (i <- 0 until oldNodes.length optimized) {
           newNodes(i) = Node(oldNodes(i).id, newX(i), newY(i))
+          i += 1
         }
         optimizeRec(newNodes, iterNum + 1)
       }
@@ -122,10 +143,10 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
   }
 
   /**
-    * Optimize the nodes locations.
-    *
-    * @return ArgMin instance with a new Graph instance and its associated energy.
-    */
+   * Optimize the nodes locations.
+   *
+   * @return ArgMin instance with a new Graph instance and its associated energy.
+   */
   def optimize(): ArgMin[Graph] = {
     val nodesNew = optimizeRec(graph.nodes)
     val graphNew = new Graph(nodesNew, graph.edges)
@@ -135,13 +156,16 @@ class Optimize(param: Param, datum: Array[DataXY], graph: Graph) extends Seriali
 }
 
 /**
-  * Companion object.
-  */
+ * Companion object.
+ */
 object Optimize extends Serializable {
   /**
-    * Create an Optimizer instance.
-    */
-  def apply(param: Param, datum: Array[DataXY], graph: Graph): Optimize = {
+   * Create an Optimizer instance.
+   */
+  def apply(param: Param,
+            datum: Array[DataXY],
+            graph: Graph
+           ): Optimize = {
     new Optimize(param, datum, graph)
   }
 }

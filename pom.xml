@@ -7,7 +7,7 @@
 
     <groupId>com.esri</groupId>
     <artifactId>elastic-graph</artifactId>
-    <version>0.11</version>
+    <version>0.12</version>
     <packaging>pom</packaging>
     <name>elastic-graph</name>
     <description>Elastic Graph</description>
@@ -39,15 +39,15 @@
         <dependency>
             <groupId>com.esri</groupId>
             <artifactId>euclid</artifactId>
-            <version>0.4</version>
+            <version>0.6</version>
             <classifier>${scala.compact}</classifier>
         </dependency>
         <dependency>
             <groupId>org.scalanlp</groupId>
             <artifactId>breeze-natives_${scala.compact}</artifactId>
-            <version>0.13.2</version>
+            <version>2.1.0</version> <!-- 0.13.2 -->
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>com.nativelibs4java</groupId>
             <artifactId>scalaxy-loops_${scala.compact}</artifactId>
             <version>0.3.4</version>
@@ -65,7 +65,7 @@
                     <artifactId>scala-reflect</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.compact}</artifactId>
@@ -79,7 +79,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>4.9.2</version>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
@@ -100,13 +100,13 @@
                     <scalaCompatVersion>${scala.compact}</scalaCompatVersion>
                     <scalaVersion>${scala.version}</scalaVersion>
                     <recompileMode>incremental</recompileMode>
-                    <useZincServer>false</useZincServer>
+                    <!--useZincServer>false</useZincServer-->
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>3.4.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -121,7 +121,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.20.1</version>
+                <version>3.5.0</version>
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration>
@@ -129,7 +129,7 @@
             <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
-                <version>2.0.0</version>
+                <version>2.2.0</version>
                 <configuration>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <junitxml>.</junitxml>
@@ -150,6 +150,9 @@
     <profiles>
         <profile>
             <id>scala-2.10</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <properties>
                 <maven.compiler.source>1.7</maven.compiler.source>
                 <maven.compiler.target>1.7</maven.compiler.target>
@@ -160,7 +163,7 @@
         <profile>
             <id>scala-2.11</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <maven.compiler.source>1.8</maven.compiler.source>
@@ -169,6 +172,17 @@
                 <scala.version>${scala.compact}.8</scala.version>
             </properties>
         </profile>
+        <profile>
+            <id>scala-2.12</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <maven.compiler.source>1.8</maven.compiler.source>
+                <maven.compiler.target>1.8</maven.compiler.target>
+                <scala.compact>2.12</scala.compact>
+                <scala.version>${scala.compact}.15</scala.version>
+            </properties>
+        </profile>
     </profiles>
-
 </project>
